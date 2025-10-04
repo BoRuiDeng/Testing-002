@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Dashboard</title>
+</head>
+<body>
+    <h2>Welcome, {{ user.username }}</h2>
+    <p>Email: {{ user.email }}</p>
+
+    {% if candidate %}
+        <h3>Your Candidate Profile</h3>
+        <p>Name: {{ candidate.first_name }} {{ candidate.last_name }}</p>
+        <p>Job Title: {{ candidate.job_title or "Not specified" }}</p>
+        <p>Status: {{ candidate.status }}</p>
+        <p>Applied On: {{ candidate.applied_on }}</p>
+    {% else %}
+        <p>No candidate profile found for this email.</p>
+    {% endif %}
+
+    <form action="/auth/logout" method="post" style="display:inline;">
+        <button type="submit">Logout</button>
+    </form>
+    <a href="/candidate-form">
+        <button type="button">Go to Candidate Intake Form</button>
+    <a href="/admin">
+        <button type="button">Go to HRM Panel</button>
+    </a>
+</body>
+</html>

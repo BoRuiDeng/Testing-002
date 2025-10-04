@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HRM Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { margin-bottom: 30px; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .card {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .card h2 { margin: 10px 0; }
+        .btn {
+            display: inline-block;
+            padding: 8px 14px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 5px;
+            background: #4a90e2;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .btn:hover {
+            background: #357abd;
+        }
+    </style>
+</head>
+<body>
+    <h1>HRM Dashboard</h1>
+
+    <div class="grid">
+        <!-- Candidates -->
+        <div class="card">
+            <h2>All Candidates</h2>
+            <p>{{ candidates_count }}</p>
+            <a class="btn btn-primary" href="/admin/applicants">View All Candidates</a>
+        </div>
+
+        <!-- Staffs -->
+        <div class="card">
+            <h2>All Staffs</h2>
+            <p>{{ users_count }}</p>
+            <a class="btn btn-primary" href="/admin/users">View All Staffs</a>
+        </div>
+
+        <!-- Training -->
+        <div class="card">
+            <h2>Training Sessions</h2>
+            <p>{{ training_count }}</p>
+            <a class="btn btn-primary" href="/admin/training">View All Training</a>
+        </div>
+    </div>
+    <a href="/" class="btn">⬅ Back to Home</a>
+</body>
+</html>

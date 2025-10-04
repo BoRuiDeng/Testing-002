@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Offer Letter – {{ company_name or "Company" }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; color: #222; line-height: 1.6; padding: 24px; }
+    .container { max-width: 800px; margin: 0 auto; }
+    h1 { font-size: 22px; margin-bottom: 8px; }
+    h2 { font-size: 18px; margin-top: 24px; }
+    .muted { color: #666; }
+    .section { margin-top: 16px; }
+    .box { background: #fafafa; border: 1px solid #eee; border-radius: 8px; padding: 16px; }
+    .kv { display: grid; grid-template-columns: 200px 1fr; gap: 8px 16px; }
+    .kv div.key { color: #555; }
+    .footer { margin-top: 32px; font-size: 12px; color: #666; }
+    .brand { color: #0b5fff; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <p class="muted">{{ (start_date or offer_valid_until)|date_au }}</p>
+
+    <h1>Offer of Employment</h1>
+    <p>Dear {{ candidate_name }},</p>
+
+    <p>
+      We are pleased to offer you the position of <strong>{{ job_title }}</strong> at
+      <span class="brand">{{ company_name or "Company" }}</span>.
+      Please review the details below. If you accept, you can sign electronically via the secure link we sent to your email.
+    </p>
+
+    <div class="section box kv">
+      <div class="key">Candidate</div><div>{{ candidate_name }}</div>
+      <div class="key">Position</div><div>{{ job_title }}</div>
+      <div class="key">Salary</div><div>{{ salary or "TBA" }}</div>
+      <div class="key">Start Date</div><div>{{ start_date|date_au }}</div>
+      <div class="key">Location</div><div>{{ location or "TBA" }}</div>
+      <div class="key">Offer valid until</div><div>{{ offer_valid_until|date_au }}</div>
+    </div>
+
+    <h2>Key Terms</h2>
+    <div class="section">
+      <p>
+        Your employment is subject to company policies and applicable laws. A detailed contract will be provided upon acceptance.
+      </p>
+      <ul>
+        <li>Working hours and reporting line will be specified in your onboarding materials.</li>
+        <li>This offer is contingent upon standard pre-employment checks where applicable.</li>
+      </ul>
+    </div>
+
+    <h2>How to Accept</h2>
+    <div class="section">
+      <p>
+        To accept this offer, please use the <em>“Review &amp; Sign Offer”</em> link in your email. The link is secure, one-time, and expires on
+        <strong>{{ offer_valid_until|date_au }}</strong>.
+      </p>
+      <p class="muted">
+        Note: This document is a generated copy for your review. The legally binding version will be the signed final copy stored by {{ company_name or "the company" }}.
+      </p>
+    </div>
+
+    <div class="section">
+      <p>We look forward to welcoming you to {{ company_name or "our team" }}.</p>
+      <p>Kind regards,</p>
+      <p>
+        {{ hr_contact_name or "HR Team" }}<br/>
+        {{ company_name or "Company" }}<br/>
+        {{ hr_contact_email or "hr@example.com" }}
+      </p>
+    </div>
+
+    <div class="footer">
+      Offer ID: {{ offer_id or "-" }} · Generated on {{ now|default(None)|date_au }}
+    </div>
+  </div>
+</body>
+</html>

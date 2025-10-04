@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Candidate Portal – Profile</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .card { border: 1px solid #ddd; border-radius: 12px; padding: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.06); background: #fff; }
+    label { font-weight: 600; display: block; margin-bottom: .25rem; }
+    input[type="text"], input[type="email"], textarea { width: 100%; padding: .6rem .7rem; border: 1px solid #ccc; border-radius: 8px; }
+    textarea { min-height: 110px; resize: vertical; }
+    button { padding: .6rem 1rem; border: 0; border-radius: 8px; background: #111827; color: #fff; cursor: pointer; }
+    .muted { color: #555; }
+    .row { margin: .75rem 0; }
+    .success { background: #ecfdf5; color: #065f46; padding: .6rem .75rem; border-radius: 8px; margin-bottom: .75rem; }
+    .file { margin-top: .5rem; }
+    .preview { max-width: 140px; border-radius: 8px; border: 1px solid #ddd; }
+    a { color: #2563eb; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; }
+  </style>
+</head>
+<body>
+<header>
+  <h2>Candidate Portal – Profile</h2>
+  <a href="/auth/logout">Logout</a>
+  <a href="/admin/users">Back</a>
+</header>
+
+{% if request.query_params.get('saved') or saved %}
+<div class="success">Profile updated.</div>
+{% endif %}
+
+<div class="grid">
+  <div class="card">
+    <h3>Basic Info</h3>
+    <form method="post" action="{{ '/portal/profile/admin/' ~ user.id if admin_view else '/portal/profile' }}">
+      <div class="row">
+        <label for="job_title">Role / Title</label>
+        <input id="job_title" type="text" name="job_title"
+               value="{{ (candidate.job_title if candidate else '') or '' }}"
+               placeholder="e.g. Software Engineer">
+      </div>
+
+      <div class="row">
+        <label for="summary">Summary</label>
+        <textarea id="summary" name="summary" placeholder="Short professional summary...">{{ profile.summary or '' }}</textarea>
+      </div>
+
+      <div class="row">
+        <label for="skills">Skills (comma separated)</label>
+        <input id="skills" type="text" name="skills" value="{{ profile.skills or '' }}" placeholder="Python, FastAPI, PostgreSQL">
+      </div>
+
+      <div class="row">
+        <label for="linkedin">LinkedIn URL</label>
+        <input id="linkedin" type="text" name="linkedin" value="{{ profile.linkedin or '' }}" placeholder="https://www.linkedin.com/in/you">
+      </div>
+
+      <div class="row">
+        <label for="address">Address</label>
+        <input id="address" type="text" name="address" value="{{ profile.address or '' }}" placeholder="City, Country">
+      </div>
+
+      <button type="submit">Save</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>Files</h3>
+    <div class="row">
+      <div class="row">
+  <div class="muted">Resume</div>
+  {% if profile.resume_path %}
+    <div class="file"><a href="/{{ profile.resume_path }}">Download current resume</a></div>
+  {% else %}
+    <div class="file muted">No resume uploaded.</div>
+  {% endif %}
+
+  <form method="post"
+        action="{{ '/portal/profile/admin/' ~ user.id ~ '/upload' if admin_view else '/portal/profile/upload' }}"
+        enctype="multipart/form-data"
+        style="margin-top:.5rem;">
+    <input type="hidden" name="kind" value="resume"/>
+    <input type="file" name="file" accept=".pdf,.doc,.docx" required/>
+    <button type="submit">Upload Resume</button>
+  </form>
+</div>
+
+    <div class="row" style="margin-top:1rem;">
+      <div class="muted">Profile Picture</div>
+      {% if profile.picture_path %}
+        <div class="file">
+          <img src="/{{ profile.picture_path }}" alt="Profile Picture" class="preview"/>
+        </div>
+      {% else %}
+        <div class="file muted">No profile picture uploaded.</div>
+      {% endif %}
+
+      <form method="post"
+            action="{{ '/portal/profile/admin/' ~ user.id ~ '/upload' if admin_view else '/portal/profile/upload' }}"
+            enctype="multipart/form-data"
+            style="margin-top:.5rem;">
+        <input type="hidden" name="kind" value="picture"/>
+        <input type="file" name="file" accept=".png,.jpg,.jpeg" required/>
+        <button type="submit">Upload Picture</button>
+      </form>
+    </div>  
+  </div>
+</div>
+
+<div class="card" style="margin-top:1rem;">
+  <h3>Account</h3>
+  <div class="muted">Signed in as <strong>{{ user.username }}</strong> ({{ user.email }})</div>
+  {% if candidate %}
+    <div class="muted">Linked candidate: {{ candidate.first_name }} {{ candidate.last_name }}</div>
+  {% endif %}
+</div>
+
+</body>
+</html>

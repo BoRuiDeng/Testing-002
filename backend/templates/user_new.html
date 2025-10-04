@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Add Employee</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+    header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; }
+    a { color:#2563eb; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .card { border:1px solid #ddd; border-radius:12px; padding:1rem; box-shadow:0 2px 6px rgba(0,0,0,0.06); background:#fff; }
+    label { font-weight:600; display:block; margin-bottom:.25rem; }
+    input[type="text"], input[type="email"], textarea, select {
+      width:100%; padding:.6rem .7rem; border:1px solid #ccc; border-radius:8px; background:#fff;
+    }
+    button { padding:.6rem 1rem; border:0; border-radius:8px; background:#111827; color:#fff; cursor:pointer; }
+    .btn-soft { background:#f3f4f6; color:#111827; border:1px solid #e5e7eb; }
+    .row { margin:.75rem 0; }
+    .muted { color:#555; }
+    .success { background:#ecfdf5; color:#065f46; padding:.6rem .75rem; border-radius:8px; }
+    .danger  { background:#fef2f2; color:#991b1b; padding:.6rem .75rem; border-radius:8px; border:1px solid #fecaca; }
+    .actions { display:flex; gap:.5rem; justify-content:flex-end; margin-top:.75rem; }
+    .breadcrumb { color:#666; font-size:.9rem; margin-bottom:.75rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h2 style="margin:0">Add Employee</h2>
+      <div class="breadcrumb">
+        <a href="/admin">Dashboard</a> &nbsp;›&nbsp; <a href="/admin/users">All Workers</a> &nbsp;›&nbsp; Add Employee
+      </div>
+    </div>
+    <div><a href="/admin/users">Cancel</a></div>
+  </header>
+
+  {% if error %}
+    <div class="danger" style="margin-bottom:1rem;">{{ error }}</div>
+  {% endif %}
+  {% if flash %}
+    <div class="success" style="margin-bottom:1rem;">{{ flash }}</div>
+  {% endif %}
+
+  <form method="post" action="/admin/users/new" class="grid">
+    <div class="card">
+      <h3>User Account</h3>
+      <div class="row">
+        <label for="username">Username</label>
+        <input id="username" type="text" name="username" placeholder="jdoe" required />
+      </div>
+      <div class="row">
+        <label for="email">Email</label>
+        <input id="email" type="email" name="email" placeholder="name@example.com" required />
+      </div>
+      <p class="muted">A user will be created with a temporary password and linked to the candidate record.</p>
+    </div>
+
+    <div class="card">
+      <h3>Candidate Details</h3>
+      <div class="row">
+        <label for="first_name">First name</label>
+        <input id="first_name" type="text" name="first_name" />
+      </div>
+      <div class="row">
+        <label for="last_name">Last name</label>
+        <input id="last_name" type="text" name="last_name" />
+      </div>
+      <div class="row">
+        <label for="job_title">Job title</label>
+        <input id="job_title" type="text" name="job_title" />
+      </div>
+      <div class="row">
+        <label for="mobile">Phone</label>
+        <input id="mobile" type="text" name="mobile" />
+      </div>
+      <div class="row">
+        <label for="status">Status</label>
+        <input id="status" type="text" name="status" value="Applied" />
+      </div>
+    </div>
+
+    <div class="card" style="grid-column:1 / -1;">
+      <div class="actions">
+        <a class="btn-soft" href="/admin/users" style="text-decoration:none; padding:.6rem 1rem; border-radius:8px;">Cancel</a>
+        <button type="submit">Create</button>
+      </div>
+    </div>
+  </form>
+
+  <script>
+    // Convenience: fill username from email prefix if username empty
+    const email = document.getElementById('email');
+    const username = document.getElementById('username');
+    email?.addEventListener('blur', () => {
+      if (username.value.trim() === '' && email.value.includes('@')) {
+        username.value = email.value.split('@')[0];
+      }
+    });
+  </script>
+</body>
+</html>

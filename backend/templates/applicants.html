@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>All Applicants</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Tabs -->
+      <nav class="tabs" style="display:flex; gap:1rem; margin-bottom:.75rem;">
+        <a class="tab active" href="/admin/applicants"
+           style="padding:.4rem .6rem; border-radius:8px; background:#111827; color:#fff; text-decoration:none;">Applicants</a>
+        <a class="tab" href="/admin/users"
+           style="padding:.4rem .6rem; border-radius:8px; background:#f3f4f6; color:#111827; border:1px solid #e5e7eb; text-decoration:none;">Workers</a>
+      </nav>
+
+      {% if flash %}
+        <div class="card" style="border:1px solid #ddd; border-left:4px solid #10b981; border-radius:12px; padding:.75rem; background:#ecfdf5; color:#065f46; margin-bottom:.75rem;">
+          {{ flash }}
+        </div>
+      {% endif %}
+
+      <!-- Top -->
+      <h1>All Applicants</h1>
+      <div class="breadcrumb" style="margin:6px 0 14px;">
+        <a href="/admin">Dashboard</a>
+        <span class="sep">›</span>
+        <a href="/admin/applicants">All Applicants</a>
+      </div>
+
+      <div class="page-header" style="margin:10px 0 14px">
+        <div></div>
+        <div class="right-actions">
+          <!-- (optional) add a button here later, e.g. Import Applicants -->
+        </div>
+      </div>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>NAME</th>
+            <th>ROLE</th>
+            <th>EMAIL ADDRESS</th>
+            <th>STATUS</th>
+            <th>PHONE NUMBER</th>
+            <th>ACTION</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in applicants %}
+          {% set display_name = ((c.first_name ~ ' ' ~ c.last_name).strip() if (c.first_name or c.last_name) else (c.email.split('@')[0] if c.email else 'Applicant')) %}
+          <tr>
+            <td>
+              <div class="row-item name-col">
+                <div style="font-weight:600">{{ display_name }}</div>
+              </div>
+            </td>
+            <td>{{ c.job_title or '' }}</td>
+            <td>{{ c.email or '' }}</td>
+            <td>{{ c.status or 'Applied' }}</td>
+            <td>{{ c.mobile or '' }}</td>
+            <td>
+              <div class="right-actions">
+                <!-- Always show profile; backend ensures a linked user exists -->
+                <a class="btn-pill" href="/admin/applicants/{{ c.id }}/profile">Candidate Profile</a>
+
+<form method="post"
+      action="/admin/applicants/{{ c.id }}/convert"
+      onsubmit="return confirm('Move this applicant to Workers?');"
+      style="display:inline;">
+  <a class="btn-pill"
+     href="#"
+     role="button"
+     onclick="event.preventDefault(); this.closest('form').requestSubmit();">
+    Move to Workers
+  </a>
+</form>
+              </div>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="6" style="color:#555;">No applicants found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div style="margin-top:.75rem;">
+        <a class="btn-pill" href="/admin/users">Go to Workers</a>
+        <a class="btn-pill" href="/admin/">Go to HRM Dashboard</a>
+      </div>
+    </div>
+  </body>
+</html>

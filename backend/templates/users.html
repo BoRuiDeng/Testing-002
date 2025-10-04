@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>All Workers</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}" />
+  </head>
+  <body>
+    <div class="container">
+
+<nav class="tabs" style="display:flex; gap:1rem; margin-bottom:.75rem;">
+  <a class="tab" href="/admin/applicants" style="padding:.4rem .6rem; border-radius:8px; background:#f3f4f6; color:#111827; border:1px solid #e5e7eb; text-decoration:none;">Applicants</a>
+  <a class="tab active" href="/admin/users" style="padding:.4rem .6rem; border-radius:8px; background:#111827; color:#fff; text-decoration:none;">Workers</a>
+</nav>
+
+{% if flash %}
+  <div class="card" style="border:1px solid #ddd; border-left:4px solid #10b981; border-radius:12px; padding:.75rem; background:#ecfdf5; color:#065f46; margin-bottom:.75rem;">
+    {{ flash }}
+  </div>
+{% endif %}
+
+      <!-- Top -->
+      <h1>All Workers</h1>
+      <div class="breadcrumb" style="margin:6px 0 14px;">
+        <a href="/admin">Dashboard</a>
+        <span class="sep">›</span>
+        <a href="/admin/users">All Workers</a>
+      </div>
+
+      <div class="page-header" style="margin:10px 0 14px">
+        <div></div>
+        <div class="right-actions">
+          <a class="btn-pill" href="/admin/users/new"><span class="plus">+</span> Add Employee</a>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <form method="get" action="/admin/users" class="card" style="margin:14px 0; padding:12px; border:1px solid #e5e7eb; border-radius:12px;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr; gap:12px; align-items:end;">
+          <div>
+            <label style="display:block; font-weight:600; margin-bottom:4px;">Role</label>
+            <select name="role" style="width:100%; padding:.55rem .7rem; border:1px solid #ccc; border-radius:8px;">
+              <option value="">All</option>
+              {% for r in roles %}
+                <option value="{{ r }}" {{ 'selected' if r == role else '' }}>{{ r }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label style="display:block; font-weight:600; margin-bottom:4px;">Status</label>
+            <select name="status" style="width:100%; padding:.55rem .7rem; border:1px solid #ccc; border-radius:8px;">
+              <option value="">All (Workers)</option>
+              {% for s in status_options %}
+                <option value="{{ s }}" {{ 'selected' if s == status else '' }}>{{ s }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label style="display:block; font-weight:600; margin-bottom:4px;">Joining From</label>
+            <input type="date" name="date_from" value="{{ date_from or '' }}" style="width:100%; padding:.55rem .7rem; border:1px solid #ccc; border-radius:8px;">
+          </div>
+
+          <div>
+            <label style="display:block; font-weight:600; margin-bottom:4px;">Joining To</label>
+            <input type="date" name="date_to" value="{{ date_to or '' }}" style="width:100%; padding:.55rem .7rem; border:1px solid #ccc; border-radius:8px;">
+          </div>
+
+          <div>
+            <label style="display:block; font-weight:600; margin-bottom:4px;">Keywords</label>
+            <input type="text" name="q" value="{{ q or '' }}" placeholder="Name, email, phone..." style="width:100%; padding:.55rem .7rem; border:1px solid #ccc; border-radius:8px;">
+          </div>
+        </div>
+
+        <div style="display:flex; gap:.5rem; justify-content:flex-end; margin-top:.75rem;">
+          <a href="/admin/users" class="btn-pill" style="text-decoration:none;">Reset</a>
+          <button type="submit" class="btn-pill" style="background:#111827; color:#fff; border:0;">Apply Filters</button>
+        </div>
+      </form>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>NAME</th>
+            <th>ROLE</th>
+            <th>EMAIL ADDRESS</th>
+            <th>STATUS</th>
+            <th>PHONE NUMBER</th>
+            <th>ACTION</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          {% set c = user_candidates.get(u.id) %}
+          {% set uname = u.username or (u.email.split('@')[0] if u.email else 'User') %}
+
+          <tr>
+            <td>
+              <div class="row-item name-col">
+                <div style="font-weight:600">{{ uname }}</div>
+              </div>
+            </td>
+            <td>{{ c.job_title if c and c.job_title else '—' }}</td>
+            <td>{{ u.email }}</td>
+            <td>{{ c.status if c and c.status else '—' }}</td>
+            <td>{{ c.mobile if c and c.mobile else '—' }}</td>
+            <td>
+              <a class="btn-pill" href="/portal/profile/admin/{{ u.id }}">Profile</a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="6" style="color:#555;">No workers found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
